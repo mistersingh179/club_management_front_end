@@ -8,7 +8,7 @@ node_modules
 _SpecRunner.html
 __benchmarks__
 coverage/
-build/
+#build/
 static/
 .module-cache
 *.gem
