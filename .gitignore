@@ -9,7 +9,7 @@ _SpecRunner.html
 __benchmarks__
 coverage/
 #build/
-static/
+#static/
 .module-cache
 *.gem
 docs/.bundle
