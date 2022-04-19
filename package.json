@@ -6,7 +6,6 @@
     "axios": "^0.17.1",
     "capitalize": "^1.0.0",
     "dateformat": "^3.0.3",
-    "fsevents": "^2.3.2",
     "gh-pages": "^1.1.0",
     "history": "^4.7.2",
     "keymirror": "^0.1.1",
