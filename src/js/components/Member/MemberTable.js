@@ -59,7 +59,7 @@ class MemberTable extends Component {
                   </td>
                   <td className={`contained-column`}>{member.email}</td>
                   <td>{member.league_rating}</td>
-                  <td>{moment(member.usatt_expiration).format("MM-DD-YYYY")}</td>
+                  <td>{member.usatt_expiration && moment(member.usatt_expiration).format("MM-DD-YYYY")}</td>
                   <td>{member.membership_kind}</td>
                   <td>{member.phone_number ? PhoneFormatter.format(member.phone_number, "(NNN) NNN-NNNN") : ''}</td>
                   <td>{member.qr_code_number}</td>
