@@ -6,6 +6,7 @@
     "axios": "^0.17.1",
     "capitalize": "^1.0.0",
     "dateformat": "^3.0.3",
+    "fsevents": "^2.3.2",
     "gh-pages": "^1.1.0",
     "history": "^4.7.2",
     "keymirror": "^0.1.1",
@@ -37,8 +38,8 @@
     "clear_cache": "curl -X DELETE \"https://api.cloudflare.com/client/v4/zones/cb5df0814843057c7dfd5aa03c043ae4/purge_cache\" -H \"Content-Type:application/json\" -H \"X-Auth-Key:3b1745e2fb6ddd52d5d6c4b93cedb7d17ee6f \" -H \"X-Auth-Email:sandeep45@gmail.com\" --data '{\"purge_everything\":true}'"
   },
   "devDependencies": {
-    "redux-devtools-extension": "^2.13.5",
     "moment": "^2.22.2",
-    "prettier": "^1.11.1"
+    "prettier": "^1.11.1",
+    "redux-devtools-extension": "^2.13.5"
   }
 }

@@ -70,6 +70,7 @@ class ShowMember extends Component {
           <ListGroupItem>name: {member.name} </ListGroupItem>
           <ListGroupItem>email: {member.email} </ListGroupItem>
           <ListGroupItem>USATT Number: {member.usatt_number} </ListGroupItem>
+          <ListGroupItem>USATT Expiration: {member.usatt_expiration} </ListGroupItem>
           <ListGroupItem>League Rating: {member.league_rating} </ListGroupItem>
           <ListGroupItem>Phone Number: {member.phone_number} </ListGroupItem>
           <ListGroupItem>QR Code Number: {member.qr_code_number} </ListGroupItem>

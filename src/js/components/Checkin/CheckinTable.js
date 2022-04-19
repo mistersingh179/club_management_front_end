@@ -8,6 +8,7 @@ import NotesSignWithTooltip from "../Generic/NotesSignWithTooltip";
 import _ from 'lodash'
 import NotificationModal from "../Generic/NotificationModal";
 import UpdateCheckinModal from "../Generic/UpdateCheckinModal";
+import moment from "moment";
 
 class CheckinTable extends Component {
   constructor(props) {
@@ -84,6 +85,7 @@ class CheckinTable extends Component {
               <th>Name</th>
               <th className={`no-print`}>Email</th>
               <th className={`no-print`}>Rating</th>
+              <th className={`no-print`}>USATT Expiration</th>
               <th>Status</th>
               <th>Amount</th>
               <th className={`no-print`}>QR Code</th>
@@ -104,6 +106,9 @@ class CheckinTable extends Component {
                   </td>
                   <td className={`no-print`}>
                     {membersHash[checkin.member_id].league_rating}
+                  </td>
+                  <td className={`no-print`}>
+                    {moment(membersHash[checkin.member_id].usatt_expiration).format("MM-DD-YYYY")}
                   </td>
                   <td>
                     {this._statusLabel(membersHash[checkin.member_id].membership_kind, checkin)}
