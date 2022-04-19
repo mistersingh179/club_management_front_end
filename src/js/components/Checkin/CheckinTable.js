@@ -108,7 +108,7 @@ class CheckinTable extends Component {
                     {membersHash[checkin.member_id].league_rating}
                   </td>
                   <td className={`no-print`}>
-                    {moment(membersHash[checkin.member_id].usatt_expiration).format("MM-DD-YYYY")}
+                    {membersHash[checkin.member_id].usatt_expiration && moment(membersHash[checkin.member_id].usatt_expiration).format("MM-DD-YYYY")}
                   </td>
                   <td>
                     {this._statusLabel(membersHash[checkin.member_id].membership_kind, checkin)}
