@@ -8,3 +8,4 @@ export * from './checkins'
 
 axios.defaults.time = 25000;
 axios.defaults.baseURL = process.env.REACT_APP_DEVELOPMENT_API_URL;
+axios.defaults.withCredentials = false;

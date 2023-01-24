@@ -27,7 +27,7 @@ class SinglePlayTable extends Component {
     let myMembers = members.filter(m => m.table_number === tableNumber).sort((a,b) => b.league_rating - a.league_rating);
 
     return (
-      <div className={`${tableNumber !== 0 ? 'printable': 'no-print'} page-break`}>
+      <div className={`${tableNumber !== 0 ? 'printable': 'no-print'}`}>
         <h4>
           Members at Table # {tableNumber}
         </h4>
