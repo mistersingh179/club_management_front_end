@@ -89,7 +89,6 @@ class CheckinTable extends Component {
               <th className={`no-print`}>USATT Exp</th>
               <th>Status</th>
               <th>Amount</th>
-              <th className={`no-print`}>QR Code</th>
               <th>Checkin</th>
               <th className={`no-print`}></th>
             </tr>
@@ -107,10 +106,10 @@ class CheckinTable extends Component {
                     {membersHash[checkin.member_id].email}
                   </td>
                   <td className={`no-print`}>
-                    {membersHash[checkin.member_id].usatt_number}
+                    {membersHash[checkin.member_id].league_rating}
                   </td>
                   <td className={`no-print`}>
-                    {membersHash[checkin.member_id].league_rating}
+                    {membersHash[checkin.member_id].usatt_number}
                   </td>
                   <td className={`no-print`}>
                     {membersHash[checkin.member_id].usatt_expiration &&
@@ -123,9 +122,6 @@ class CheckinTable extends Component {
                   </td>
                   <td>
                     ${checkin.amount_collected}.00
-                  </td>
-                  <td className={`no-print`}>
-                    {membersHash[checkin.member_id].qr_code_number}
                   </td>
                   <td>{DateFormat(checkin.created_at, 'mm-dd-yy h:MM TT')}</td>
                   <td className={`no-print`}>

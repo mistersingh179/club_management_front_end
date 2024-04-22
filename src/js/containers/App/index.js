@@ -13,6 +13,7 @@ import Home from "../Home/HomeContainer";
 import Tos from "./tos";
 import Pp from "./pp";
 import { ToastContainer } from 'react-toastify';
+import PublicCheckin from "../Checkins/PublicCheckin";
 
 
 const mapStateToProps = (state, ownProps) => {
@@ -48,6 +49,7 @@ class App extends Component {
           <Route exact path="/tos" component={Tos}/>
           <Route exact path="/pp" component={Pp}/>
           <Route path="/authentication" component={AuthenticationContainer} />
+          <Route path="/clubs/:clubId/public-check-in" component={PublicCheckin} />
           <Route path="/clubs" component={ClubContainer} />
           <Route component={NotFound}/>
         </Switch>

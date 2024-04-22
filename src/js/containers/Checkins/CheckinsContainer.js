@@ -16,6 +16,7 @@ import CheckinsDashboard from "../Checkins/CheckinsDashboard";
 
 import AllMembers from "../Member/AllMembers";
 import NewMember from "../Member/NewMember";
+import PublicCheckin from "./PublicCheckin";
 // import ShowCheckin from "./ShowCheckin";
 // import NewCheckin from "../Checkin/NewCheckin";
 // import EditCheckin from "../Checkin/EditCheckin";
@@ -45,6 +46,7 @@ class CheckinContainer extends Component {
         <Switch>
           <Route exact path={match.path} component={AllCheckins}/>
           <Route exact path={`${match.path}/dashboard`} component={CheckinsDashboard}/>
+          <Route exact path={`${match.path}/public-checkin`} component={PublicCheckin}/>
           {/*<Route exact path={`${match.path}/new`} component={NewCheckin}/>*/}
           {/*<Route exact path={`${match.path}/:memberId/edit`} component={EditCheckin}/>*/}
           {/*<Route path={`${match.path}/:memberId`} component={ShowCheckin}/>*/}
