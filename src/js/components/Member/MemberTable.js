@@ -42,7 +42,8 @@ class MemberTable extends Component {
               <th>Name</th>
               <th>Email</th>
               <th>Rating</th>
-              <th>USATT expiration</th>
+              <th>USATT #</th>
+              <th>USATT exp</th>
               <th>Membership Type</th>
               <th>Phone #</th>
               <th>QR Code #</th>
@@ -58,6 +59,7 @@ class MemberTable extends Component {
                     <NotesSignWithTooltip notes={member.notes} />
                   </td>
                   <td className={`contained-column`}>{member.email}</td>
+                  <td>{member.usatt_number}</td>
                   <td>{member.league_rating}</td>
                   <td>{member.usatt_expiration && moment(member.usatt_expiration).format("MM-DD-YYYY")}</td>
                   <td>{member.membership_kind}</td>

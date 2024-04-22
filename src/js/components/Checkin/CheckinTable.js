@@ -85,7 +85,8 @@ class CheckinTable extends Component {
               <th>Name</th>
               <th className={`no-print`}>Email</th>
               <th className={`no-print`}>Rating</th>
-              <th className={`no-print`}>USATT Expiration</th>
+              <th className={`no-print`}>USATT #</th>
+              <th className={`no-print`}>USATT Exp</th>
               <th>Status</th>
               <th>Amount</th>
               <th className={`no-print`}>QR Code</th>
@@ -99,19 +100,26 @@ class CheckinTable extends Component {
                 <tr key={checkin.id}>
                   <td className={`contained-column`}>
                     {membersHash[checkin.member_id].name}{' '}
-                    <NotesSignWithTooltip notes={membersHash[checkin.member_id].notes} />
+                    <NotesSignWithTooltip
+                      notes={membersHash[checkin.member_id].notes}/>
                   </td>
                   <td className={`contained-column no-print`}>
                     {membersHash[checkin.member_id].email}
                   </td>
                   <td className={`no-print`}>
+                    {membersHash[checkin.member_id].usatt_number}
+                  </td>
+                  <td className={`no-print`}>
                     {membersHash[checkin.member_id].league_rating}
                   </td>
                   <td className={`no-print`}>
-                    {membersHash[checkin.member_id].usatt_expiration && moment(membersHash[checkin.member_id].usatt_expiration).format("MM-DD-YYYY")}
+                    {membersHash[checkin.member_id].usatt_expiration &&
+                      moment(membersHash[checkin.member_id].usatt_expiration).
+                        format('MM-DD-YYYY')}
                   </td>
                   <td>
-                    {this._statusLabel(membersHash[checkin.member_id].membership_kind, checkin)}
+                    {this._statusLabel(
+                      membersHash[checkin.member_id].membership_kind, checkin)}
                   </td>
                   <td>
                     ${checkin.amount_collected}.00
@@ -119,9 +127,10 @@ class CheckinTable extends Component {
                   <td className={`no-print`}>
                     {membersHash[checkin.member_id].qr_code_number}
                   </td>
-                  <td>{DateFormat(checkin.created_at, "mm-dd-yy h:MM TT")}</td>
+                  <td>{DateFormat(checkin.created_at, 'mm-dd-yy h:MM TT')}</td>
                   <td className={`no-print`}>
-                    {this.getDropdownButton(checkin, membersHash[checkin.member_id], club)}
+                    {this.getDropdownButton(checkin,
+                      membersHash[checkin.member_id], club)}
                   </td>
                 </tr>
               );
