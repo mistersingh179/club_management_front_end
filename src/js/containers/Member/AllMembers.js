@@ -60,6 +60,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateSearchFields: actions.updateSearchFields,
     markAllPartTime: actions.markAllPartTime.bind(this, clubId),
     downloadRatings: actions.downloadRatings.bind(this, clubId),
+    uploadRatingsFile: actions.parseRatingsCsvFile.bind(this, clubId), // New action for file upload
     goToPage: url => push(url)
   }, dispatch);
 };
@@ -90,26 +91,47 @@ class AllMembers extends Component {
         <PageHeader>
           Members
           <small> / {club.name ? Capitalize(club.name) : ''} </small>
-          <Button bsStyle="primary" onClick={goToNewMembersPage} style={{float:'right', marginLeft: 10}}>
+          <Button bsStyle="primary" onClick={goToNewMembersPage}
+                  style={{ float: 'right', marginLeft: 10 }}>
             New Member
           </Button>
-          <Button bsStyle="success" onClick={() => this.setState({showRatingsModal: true})} style={{float:'right', marginLeft: 10}}>
+          <Button bsStyle="success"
+                  onClick={() => this.setState({ showRatingsModal: true })}
+                  style={{ float: 'right', marginLeft: 10 }}>
             Download Ratings
           </Button>
+          <Button
+            bsStyle="primary"
+            onClick={() => this.fileInput.click()}
+            style={{ float: 'right', marginRight: 10 }}
+          >
+            Upload Ratings CSV File
+          </Button>
+          <input
+            type="file"
+            accept=".csv"
+            ref={(input) => (this.fileInput = input)}
+            style={{ display: 'none' }}
+            onChange={this._uploadRatingsFile}
+          />
 
           <ConfirmationModal visible={this.state.showModal}
-                             closeModal={() => this.setState({showModal: false})}
+                             closeModal={() => this.setState(
+                               { showModal: false })}
                              actionButtonClicked={this._markAllPartTime}/>
           <ConfirmationModal visible={this.state.showRatingsModal}
-                             closeModal={() => this.setState({showRatingsModal: false})}
+                             closeModal={() => this.setState(
+                               { showRatingsModal: false })}
                              actionButtonClicked={this._downloadRatings}/>
         </PageHeader>
 
         <MemberLookup {...this.props}  />
         <MemberTable {...this.props} />
 
-        <Button bsStyle="danger" onClick={() => this.setState({showModal: true})} style={{marginRight: 10}}>
-          Reset All Members to Part-Time Status
+        <Button bsStyle="danger"
+                onClick={() => this.setState({ showModal: true })}
+                style={{ marginRight: 10 }}>
+        Reset All Members to Part-Time Status
         </Button>
         <Button bsStyle="default" onClick={goToAllClubs}>
           Clubs
@@ -140,6 +162,22 @@ class AllMembers extends Component {
         this.setState({ showRatingsModal: false });
       }
     )
+  };
+
+  _uploadRatingsFile = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const { uploadRatingsFile } = this.props;
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Call the new action to upload and parse the file
+      uploadRatingsFile(formData).then((response) => {
+        // Refresh members after successful upload
+        const { getMembers } = this.props;
+        getMembers();
+      });
+    }
   };
 
 };

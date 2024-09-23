@@ -114,6 +114,17 @@ export const downloadRatings = (clubId) => dispatch => {
   ).catch(redirectOnUnAuthorized.bind(this, dispatch))
 };
 
+export const parseRatingsCsvFile = (clubId, formData) => (dispatch) => {
+  return WebUtil.uploadRatingsFile(clubId, formData).then((response) => {
+    console.log("uploadRatingsFile response: ", response);
+    const normalizedData = normalize(response.data, [mySchema.member]);
+    dispatch({
+      type: K.RECEIVE_ENTITY_ITEM,
+      payload: normalizedData,
+    });
+  }).catch(redirectOnUnAuthorized.bind(this, dispatch));
+};
+
 export const createMember = (clubId, params) => dispatch => {
   console.log("inside createMember: ", params);
   return WebUtil.createMember(clubId, params).then(

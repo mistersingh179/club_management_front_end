@@ -61,6 +61,17 @@ export const downloadRatings = (clubId) => {
   });
 };
 
+export const uploadRatingsFile = (clubId, formData) => {
+  return axios.post(`/clubs/${clubId}/members/parse_ratings_csv_file`, formData, {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    }
+  });
+};
+
+
+
 export const getMembers = (clubId) => {
   return axios.get(`/clubs/${clubId}/members`, {
     headers: {
