@@ -12,6 +12,7 @@ import { push } from 'react-router-redux'
 import {Button} from 'react-bootstrap'
 import MemberLookup from "../../components/Member/MemberLookup";
 import ConfirmationModal from '../../components/Generic/ConfirmationModal'
+import RatingsImportSummaryModal from '../../components/Member/RatingsImportSummaryModal'
 
 const mapStateToProps = (state, ownProps) => {
   const match = ownProps.match;
@@ -70,7 +71,9 @@ class AllMembers extends Component {
     super(props);
     this.state = {
       showRatingsModal: false,
-      showModal: false
+      showModal: false,
+      ratingsImportSummary: null,
+      ratingsImportError: null
     }
   };
 
@@ -123,6 +126,10 @@ class AllMembers extends Component {
                              closeModal={() => this.setState(
                                { showRatingsModal: false })}
                              actionButtonClicked={this._downloadRatings}/>
+          <RatingsImportSummaryModal summary={this.state.ratingsImportSummary}
+                                     error={this.state.ratingsImportError}
+                                     closeModal={() => this.setState(
+                                       { ratingsImportSummary: null, ratingsImportError: null })}/>
         </PageHeader>
 
         <MemberLookup {...this.props}  />
@@ -166,16 +173,29 @@ class AllMembers extends Component {
 
   _uploadRatingsFile = (event) => {
     const file = event.target.files[0];
+    // Clear the picker so choosing the same file again (next week's upload)
+    // still fires onChange.
+    event.target.value = '';
     if (file) {
       const { uploadRatingsFile } = this.props;
       const formData = new FormData();
       formData.append('file', file);
 
-      // Call the new action to upload and parse the file
-      uploadRatingsFile(formData).then((response) => {
+      uploadRatingsFile(formData).then((summary) => {
         // Refresh members after successful upload
         const { getMembers } = this.props;
         getMembers();
+        // No summary: the session expired (we were sent to sign in), or the
+        // backend predates the summary.
+        if (summary) {
+          this.setState({ ratingsImportSummary: summary, ratingsImportError: null });
+        }
+      }).catch((error) => {
+        const message = error && error.response && error.response.data && error.response.data.error;
+        this.setState({
+          ratingsImportSummary: null,
+          ratingsImportError: message || 'The upload failed. Please try again.'
+        });
       });
     }
   };

@@ -62,7 +62,7 @@ export const downloadRatings = (clubId) => {
 };
 
 export const uploadRatingsFile = (clubId, formData) => {
-  return axios.post(`/clubs/${clubId}/members/parse_ratings_csv_file`, formData, {
+  return axios.post(`/clubs/${clubId}/members/parse_ratings_csv_file?include_summary=true`, formData, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json"
