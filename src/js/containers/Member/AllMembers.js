@@ -66,6 +66,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }, dispatch);
 };
 
+// The file's contents as a Blob plus its name (FileReader works in every browser).
+const readIntoMemory = (file) => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onload = () => resolve({ blob: new Blob([reader.result], { type: file.type }), name: file.name });
+  reader.onerror = () => reject(reader.error);
+  reader.readAsArrayBuffer(file);
+});
+
 class AllMembers extends Component {
   constructor(props) {
     super(props);
@@ -73,7 +81,10 @@ class AllMembers extends Component {
       showRatingsModal: false,
       showModal: false,
       ratingsImportSummary: null,
-      ratingsImportError: null
+      ratingsImportError: null,
+      ratingsFile: null,
+      previewingRatings: false,
+      applyingRatings: false
     }
   };
 
@@ -106,9 +117,10 @@ class AllMembers extends Component {
           <Button
             bsStyle="primary"
             onClick={() => this.fileInput.click()}
+            disabled={this.state.previewingRatings}
             style={{ float: 'right', marginRight: 10 }}
           >
-            Upload Ratings CSV File
+            {this.state.previewingRatings ? 'Reading file…' : 'Upload Ratings CSV File'}
           </Button>
           <input
             type="file"
@@ -128,8 +140,10 @@ class AllMembers extends Component {
                              actionButtonClicked={this._downloadRatings}/>
           <RatingsImportSummaryModal summary={this.state.ratingsImportSummary}
                                      error={this.state.ratingsImportError}
+                                     applying={this.state.applyingRatings}
+                                     onApply={this._applyRatingsFile}
                                      closeModal={() => this.setState(
-                                       { ratingsImportSummary: null, ratingsImportError: null })}/>
+                                       { ratingsImportSummary: null, ratingsImportError: null, ratingsFile: null })}/>
         </PageHeader>
 
         <MemberLookup {...this.props}  />
@@ -171,33 +185,71 @@ class AllMembers extends Component {
     )
   };
 
+  // Choosing a file only previews it: the popup lists what would change and
+  // nothing is saved until Save changes sends the same file again.
   _uploadRatingsFile = (event) => {
     const file = event.target.files[0];
     // Clear the picker so choosing the same file again (next week's upload)
     // still fires onChange.
     event.target.value = '';
-    if (file) {
-      const { uploadRatingsFile } = this.props;
-      const formData = new FormData();
-      formData.append('file', file);
+    if (!file) return;
+    this.setState({ previewingRatings: true });
+    // Keep a copy in memory, so Save sends exactly the file that was previewed
+    // even if the CSV on disk is edited in between.
+    readIntoMemory(file).then(
+      copy => this._sendRatingsFile(copy, true),
+      () => this.setState({ previewingRatings: false, ratingsImportError: 'The file could not be read. Please try again.' })
+    );
+  };
 
-      uploadRatingsFile(formData).then((summary) => {
-        // Refresh members after successful upload
-        const { getMembers } = this.props;
+  _applyRatingsFile = () => {
+    if (this.state.ratingsFile) {
+      this._sendRatingsFile(this.state.ratingsFile, false);
+    }
+  };
+
+  _sendRatingsFile = (file, preview) => {
+    const { uploadRatingsFile, getMembers } = this.props;
+    const formData = new FormData();
+    formData.append('file', file.blob, file.name);
+    this.setState({ applyingRatings: !preview, ratingsImportError: null });
+
+    uploadRatingsFile(formData, preview).then((summary) => {
+      if (!preview) {
+        // Refresh members after a saved upload
         getMembers();
-        // No summary: the session expired (we were sent to sign in), or the
-        // backend predates the summary.
-        if (summary) {
-          this.setState({ ratingsImportSummary: summary, ratingsImportError: null });
-        }
-      }).catch((error) => {
-        const message = error && error.response && error.response.data && error.response.data.error;
+      }
+      // No summary: the session expired (we were sent to sign in), or the
+      // backend predates the summary.
+      this.setState({
+        previewingRatings: false,
+        applyingRatings: false,
+        ratingsFile: preview ? file : null,
+        ratingsImportSummary: summary || null,
+        ratingsImportError: null
+      });
+    }).catch((error) => {
+      const reason = error && error.response && error.response.data && error.response.data.error;
+      const message = typeof reason === 'string' ? reason : null;
+      if (preview) {
         this.setState({
+          previewingRatings: false,
+          ratingsFile: null,
           ratingsImportSummary: null,
           ratingsImportError: message || 'The upload failed. Please try again.'
         });
-      });
-    }
+      } else {
+        // Keep the reviewed list and the file, so Save can simply be retried:
+        // it only saves values that still differ, so a save that went through
+        // before the error is not repeated.
+        this.setState({
+          applyingRatings: false,
+          ratingsImportError: message
+            ? `Saving failed: ${message.replace(/\.$/, '')}. Click Save changes to try again.`
+            : 'Saving failed. Click Save changes to try again.'
+        });
+      }
+    });
   };
 
 };

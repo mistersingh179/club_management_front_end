@@ -61,8 +61,10 @@ export const downloadRatings = (clubId) => {
   });
 };
 
-export const uploadRatingsFile = (clubId, formData) => {
-  return axios.post(`/clubs/${clubId}/members/parse_ratings_csv_file?include_summary=true`, formData, {
+// preview: the server answers with what the file would change and saves nothing.
+export const uploadRatingsFile = (clubId, formData, preview) => {
+  const query = preview ? 'include_summary=true&preview=true' : 'include_summary=true';
+  return axios.post(`/clubs/${clubId}/members/parse_ratings_csv_file?${query}`, formData, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json"

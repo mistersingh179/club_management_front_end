@@ -115,19 +115,22 @@ export const downloadRatings = (clubId) => dispatch => {
 };
 
 // Resolves with the upload summary: which rows matched a member (by USATT
-// number, or by name for a member with no USATT number saved) and which didn't.
-// A backend without the summary answers with the plain members array; that
-// resolves with no summary.
-export const parseRatingsCsvFile = (clubId, formData) => (dispatch) => {
-  return WebUtil.uploadRatingsFile(clubId, formData).then((response) => {
+// number, or by name for a member with no USATT number saved), what changes
+// for each (old and new value), and which rows didn't match. With preview the
+// server saves nothing and sends no members (summary.saved is false). A backend
+// without the summary answers with the plain members array; that resolves with
+// no summary.
+export const parseRatingsCsvFile = (clubId, formData, preview = false) => (dispatch) => {
+  return WebUtil.uploadRatingsFile(clubId, formData, preview).then((response) => {
     const withSummary = !Array.isArray(response.data);
     const members = withSummary ? response.data.members : response.data;
     const summary = withSummary ? response.data.summary : undefined;
-    const normalizedData = normalize(members, [mySchema.member]);
-    dispatch({
-      type: K.RECEIVE_ENTITY_ITEM,
-      payload: normalizedData,
-    });
+    if (members) {
+      dispatch({
+        type: K.RECEIVE_ENTITY_ITEM,
+        payload: normalize(members, [mySchema.member]),
+      });
+    }
     return summary;
   }).catch(redirectOnUnAuthorized.bind(this, dispatch));
 };
